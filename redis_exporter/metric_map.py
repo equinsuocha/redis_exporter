@@ -90,7 +90,13 @@ METRIC_MAP = {
         "redis_lru_clock_min": {
             "redis_alias": "lru_clock",
             "metric_type": CounterMetricFamily
-        }  # 13252060
+        },  # 13252060
+
+        "atomicvar_api": {},
+        "config_file": {},
+        "configured_hz": {},
+        "executable": {},
+        "io_threads_active": {}
     },
 
     "clients": {
@@ -103,7 +109,12 @@ METRIC_MAP = {
         "redis_blocked_clients": {
             "redis_alias": "blocked_clients",
             "metric_type": GaugeMetricFamily
-        }  # 0
+        },  # 0
+
+        "client_recent_max_input_buffer": {},
+        "client_recent_max_output_buffer": {},
+        "clients_in_timeout_table": {},
+        "tracking_clients": {}
     },
 
     "memory": {
@@ -145,7 +156,40 @@ METRIC_MAP = {
         "redis_mem_allocator": {
             "redis_alias": "mem_allocator",
             "metric_type": None
-        }  # jemalloc-5.1.0
+        },  # jemalloc-5.1.0,
+
+        "active_defrag_running": {},
+        "allocator_active": {},
+        "allocator_allocated": {},
+        "allocator_frag_bytes": {},
+        "allocator_frag_ratio": {},
+        "allocator_resident": {},
+        "allocator_rss_bytes": {},
+        "allocator_rss_ratio": {},
+        "lazyfree_pending_objects": {},
+        "maxmemory": {},
+        "maxmemory_human": {},
+        "maxmemory_policy": {},
+        "mem_aof_buffer": {},
+        "mem_clients_normal": {},
+        "mem_clients_slaves": {},
+        "mem_fragmentation_bytes": {},
+        "mem_not_counted_for_evict": {},
+        "mem_replication_backlog": {},
+        "number_of_cached_scripts": {},
+        "rss_overhead_bytes": {},
+        "rss_overhead_ratio": {},
+        "total_system_memory": {},
+        "total_system_memory_human": {},
+        "used_memory_dataset": {},
+        "used_memory_dataset_perc": {},
+        "used_memory_lua_human": {},
+        "used_memory_overhead": {},
+        "used_memory_peak_perc": {},
+        "used_memory_rss_human": {},
+        "used_memory_scripts": {},
+        "used_memory_scripts_human": {},
+        "used_memory_startup": {}
     },
 
     "persistence": {
@@ -212,7 +256,13 @@ METRIC_MAP = {
         "redis_aof_last_bgrewrite_status": {
             "redis_alias": "aof_last_bgrewrite_status",
             "metric_type": None
-        }  # ok
+        },  # ok
+
+        "aof_last_cow_size": {},
+        "aof_last_write_status": {},
+        "module_fork_in_progress": {},
+        "module_fork_last_cow_size": {},
+        "rdb_last_cow_size": {}
     },
 
     "stats": {
@@ -290,6 +340,27 @@ METRIC_MAP = {
             "redis_alias": "migrate_cached_sockets",
             "metric_type": GaugeMetricFamily
         },  # 0
+
+        "active_defrag_hits": {},
+        "active_defrag_key_hits": {},
+        "active_defrag_key_misses": {},
+        "active_defrag_misses": {},
+        "expire_cycle_cpu_milliseconds": {},
+        "expired_stale_perc": {},
+        "expired_time_cap_reached_count": {},
+        "instantaneous_input_kbps": {},
+        "instantaneous_output_kbps": {},
+        "io_threaded_reads_processed": {},
+        "io_threaded_writes_processed": {},
+        "slave_expires_tracked_keys": {},
+        "total_net_input_bytes": {},
+        "total_net_output_bytes": {},
+        "total_reads_processed": {},
+        "total_writes_processed": {},
+        "tracking_total_items": {},
+        "tracking_total_keys": {},
+        "tracking_total_prefixes": {},
+        "unexpected_error_replies": {}
     },
 
     "replication": {
@@ -326,7 +397,11 @@ METRIC_MAP = {
         "redis_repl_backlog_histlen": {
             "redis_alias": "repl_backlog_histlen",
             "metric_type": None
-        }  # 0
+        },  # 0
+
+        "second_repl_offset": {},
+        "master_replid2": {},
+        "master_replid": {}
     },
 
     "cpu": {
@@ -383,5 +458,14 @@ METRIC_MAP = {
 }
 
 ALL_SECTIONS = {section for section in METRIC_MAP.keys()}
-ALL_METRICS_FLAT = dict()
-[ALL_METRICS_FLAT.update(metrics) for section, metrics in METRIC_MAP.items() if section != 'keyspace']
+MANAGED_METRICS = dict()
+
+# parse out unmanaged metrics at this stage;
+for section, metrics in METRIC_MAP.items():
+    MANAGED_METRICS[section] = dict()
+    for metric_name, metric_info in metrics.items():
+        if metric_info is not None and metric_info.get('metric_type', None):
+            MANAGED_METRICS[section][metric_name] = metric_info
+
+MANAGED_METRICS_FLAT = dict()
+[MANAGED_METRICS_FLAT.update(**metrics) for section, metrics in MANAGED_METRICS.items() if section != 'keyspace']

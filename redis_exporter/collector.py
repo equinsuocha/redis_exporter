@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, List
 from prometheus_client.core import Metric, Counter
 
-from redis_exporter.metric_map import METRIC_MAP, ALL_METRICS_FLAT
+from redis_exporter.metric_map import MANAGED_METRICS, MANAGED_METRICS_FLAT
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,11 +66,7 @@ class RedisCollector(object):
 
     def parse_info(self, info: dict) -> Metric:
         for metric in self.exposed_info_metrics:
-            metric_info = ALL_METRICS_FLAT[metric]
-            if metric_info['metric_type'] is None:
-                """ drop metric if type is not mapped in metric_map.py """
-                LOGGER.debug('drop metric %s, since type is not specified', metric)
-                continue
+            metric_info = MANAGED_METRICS_FLAT[metric]
             LOGGER.debug('processing metric %s %s', metric, metric_info)
             value = LabelValueContainer(info.get(metric_info['redis_alias'], None))
             LOGGER.debug('new value: %s', value)
@@ -79,7 +75,7 @@ class RedisCollector(object):
     @staticmethod
     def parse_keyspace_metrics(info: dict) -> Metric:
         keyspaces = {k for k in info.keys() if k.startswith('db')}
-        for metric, metric_info in METRIC_MAP['keyspace'].items():
+        for metric, metric_info in MANAGED_METRICS['keyspace'].items():
             LOGGER.debug('processing metric %s %s', metric, metric_info)
             values = []
             for keyspace in keyspaces:

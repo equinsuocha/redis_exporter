@@ -5,7 +5,7 @@ import redis
 import time
 from prometheus_client import start_http_server, REGISTRY, PROCESS_COLLECTOR, PLATFORM_COLLECTOR
 
-from .metric_map import METRIC_MAP
+from .metric_map import MANAGED_METRICS
 from .collector import RedisCollector
 
 LOGGER = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ class RedisExporter(object):
             include_sections = set(self._collector_options.get('sections', []))
             drop_metrics = set(self._collector_options.get('drop', []))
             exposed_info_section_metrics = \
-                set().union(*[set(metrics.keys()) for section, metrics in METRIC_MAP.items()
+                set().union(*[set(metrics.keys()) for section, metrics in MANAGED_METRICS.items()
                               if section in include_sections and section != 'keyspace'])
             self._exposed_info_metrics = list(exposed_info_section_metrics.difference(drop_metrics))
             self._collector = RedisCollector(host=self._redis_host,
