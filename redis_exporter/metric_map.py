@@ -114,7 +114,7 @@ METRIC_MAP = {
 
         "redis_used_memory_mb": {
             "redis_alias": "used_memory_human",
-            "metric_type": GaugeMetricFamily
+            "metric_type": None
         },  # 190.72M
 
         "redis_used_memory_rss": {
@@ -129,7 +129,7 @@ METRIC_MAP = {
 
         "redis_used_memory_peak_mb": {
             "redis_alias": "used_memory_peak_human",
-            "metric_type": CounterMetricFamily
+            "metric_type": None
         },  # 193.98M
 
         "redis_used_memory_lua": {
@@ -383,5 +383,5 @@ METRIC_MAP = {
 }
 
 ALL_SECTIONS = {section for section in METRIC_MAP.keys()}
-ALL_METRICS_FLAT = dict() 
+ALL_METRICS_FLAT = dict()
 [ALL_METRICS_FLAT.update(metrics) for section, metrics in METRIC_MAP.items() if section != 'keyspace']
