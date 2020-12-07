@@ -55,7 +55,7 @@ class RedisExporter(object):
             drop_metrics = set(self._collector_options.get('drop', []))
             exposed_info_section_metrics = \
                 set().union(*[set(metrics.keys()) for section, metrics in METRIC_MAP.items()
-                              if section in include_sections and section not in ('keyspace', 'server')])
+                              if section in include_sections and section != 'keyspace'])
             self._exposed_info_metrics = list(exposed_info_section_metrics.difference(drop_metrics))
             self._collector = RedisCollector(host=self._redis_host,
                                              port=self._redis_port,
