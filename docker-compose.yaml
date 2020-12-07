@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  redis:
+    image: "redis"
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+
+  redis_exporter:
+    build: .
+    command: ['redis_exporter', '--log-level', 'DEBUG']
+    stop_signal: SIGINT
+    depends_on:
+      - redis
+    ports:
+      - 9999:9999
+
+volumes:
+  redis_data:

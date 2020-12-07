@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import logging
+import argparse
+from redis_exporter.exporter import RedisExporter
+
+LOGGER = logging.getLogger()
+sh = logging.StreamHandler()
+LOGGER.addHandler(sh)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', required=False, type=str, default="/etc/redis_exporter/redis_exporter.yaml")
+parser.add_argument('--log-level', required=False, type=str, choices=['INFO', 'DEBUG'], default='INFO')
+args = parser.parse_args()
+
+LOGGER.setLevel(getattr(logging, args.log_level.upper()))
+
+print(args.config)
+redis_exporter = RedisExporter(args.config)
+redis_exporter.start()

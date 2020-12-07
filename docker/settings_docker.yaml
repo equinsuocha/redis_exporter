@@ -1,0 +1,13 @@
+redis:
+  host: host.docker.internal
+  port: 6379
+global:
+  disable_builtin_collectors: True
+  exporter_port: 9999
+collector:
+  disable_scrape_metrics: True
+  sections:
+    - clients
+    - keyspace
+  drop:
+    - redis_blocked_clients
