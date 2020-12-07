@@ -17,6 +17,5 @@ args = parser.parse_args()
 
 LOGGER.setLevel(getattr(logging, args.log_level.upper()))
 
-print(args.config)
 redis_exporter = RedisExporter(args.config)
 redis_exporter.start()
