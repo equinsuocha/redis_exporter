@@ -84,12 +84,12 @@ METRIC_MAP = {
 
         "redis_hz": {
             "redis_alias": "hz",
-            "metric_type": GaugeMetricFamily
+            "metric_type": None
         },  # 10
 
-        "redis_lru_clock": {
+        "redis_lru_clock_min": {
             "redis_alias": "lru_clock",
-            "metric_type": None
+            "metric_type": CounterMetricFamily
         }  # 13252060
     },
 
@@ -124,12 +124,12 @@ METRIC_MAP = {
 
         "redis_used_memory_peak_bytes": {
             "redis_alias": "used_memory_peak",
-            "metric_type": None
+            "metric_type": CounterMetricFamily
         },  # 203398872
 
         "redis_used_memory_peak_mb": {
             "redis_alias": "used_memory_peak_human",
-            "metric_type": None
+            "metric_type": CounterMetricFamily
         },  # 193.98M
 
         "redis_used_memory_lua": {
