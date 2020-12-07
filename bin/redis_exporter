@@ -6,6 +6,8 @@ from redis_exporter.exporter import RedisExporter
 
 LOGGER = logging.getLogger()
 sh = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+sh.setFormatter(formatter)
 LOGGER.addHandler(sh)
 
 parser = argparse.ArgumentParser()
