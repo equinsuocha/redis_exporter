@@ -12,6 +12,8 @@ services:
     build: .
     command: ['redis_exporter', '--log-level', 'DEBUG']
     stop_signal: SIGINT
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/metrics"]
     depends_on:
       - redis
     ports:
