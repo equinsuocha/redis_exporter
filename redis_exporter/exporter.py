@@ -14,10 +14,14 @@ DEFAULT_CONFIG_PATH = "/etc/redis_exporter/redis_exporter.yaml"
 
 
 def write_to_redis_on_startup(host, port, exposed_metrics):
-    r = redis.Redis(host=host, port=port, db=0)
-    r.set('_redis_exporter_exposed_metrics', ' '.join(exposed_metrics))
-    r = redis.Redis(host=host, port=port, db=1)
-    r.set('_redis_exporter_exposed_metrics', ' '.join(exposed_metrics))
+    try:
+        r = redis.Redis(host=host, port=port, db=0)
+        r.set('_redis_exporter_exposed_metrics', ' '.join(exposed_metrics))
+        r = redis.Redis(host=host, port=port, db=1)
+        r.set('_redis_exporter_exposed_metrics', ' '.join(exposed_metrics))
+    except (redis.exceptions.ConnectionError, ConnectionRefusedError):
+        LOGGER.exception("Couldn't write metrics to Redis at startup. Exit process.")
+        sys.exit()
 
 
 def load_config_file(path: str = DEFAULT_CONFIG_PATH) -> dict:
